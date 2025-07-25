@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate running time based on distance and pace">
+    <meta name="theme-color" content="#2563eb">
+    <title>Running Time Calculator</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🏃%3C/text%3E%3C/svg%3E">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navigation">
+            <a href="index.html" class="nav-link">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-text">Pace Converter</span>
+            </a>
+            <a href="time-calculator.html" class="nav-link active">
+                <span class="nav-icon">⏱️</span>
+                <span class="nav-text">Time Calculator</span>
+            </a>
+        </nav>
+
+        <header>
+            <h1>⏱️ Running Time Calculator</h1>
+            <p class="subtitle">Calculate time needed for your run</p>
+        </header>
+
+        <main>
+            <div class="converter-card">
+                <div class="input-group">
+                    <label for="distance-input">Distance (meters)</label>
+                    <input 
+                        type="number" 
+                        id="distance-input" 
+                        placeholder="Enter distance in meters"
+                        min="0"
+                        step="1"
+                        aria-describedby="distance-help"
+                    >
+                    <small id="distance-help">Enter the distance you want to run in meters</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="pace-input">Pace (min/km)</label>
+                    <input 
+                        type="text" 
+                        id="pace-input" 
+                        placeholder="Enter pace as mm:ss"
+                        aria-describedby="pace-help"
+                        pattern="[0-9]*:?[0-9]*"
+                    >
+                    <small id="pace-help">Enter your running pace as minutes:seconds per kilometer</small>
+                </div>
+
+                <div class="conversion-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L12 22M5 12L12 5L19 12"/>
+                    </svg>
+                </div>
+
+                <div class="result-group">
+                    <label for="time-result">Running Time</label>
+                    <div class="result-display" id="time-result">
+                        <span class="result-value">--:--:--</span>
+                        <span class="result-unit">h:mm:ss</span>
+                    </div>
+                    <small>Total time needed to complete the distance</small>
+                </div>
+            </div>
+
+            <div class="quick-conversions">
+                <h3>Common Distances</h3>
+                <table class="distances-table">
+                    <thead>
+                        <tr>
+                            <th>Distance</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="distances-tbody">
+                        <tr>
+                            <td class="distance-cell" data-distance="100">100m</td>
+                            <td class="time-cell">--</td>
+                        </tr>
+                        <tr>
+                            <td class="distance-cell" data-distance="200">200m</td>
+                            <td class="time-cell">--</td>
+                        </tr>
+                        <tr>
+                            <td class="distance-cell" data-distance="300">300m</td>
+                            <td class="time-cell">--</td>
+                        </tr>
+                        <tr>
+                            <td class="distance-cell" data-distance="400">400m</td>
+                            <td class="time-cell">--</td>
+                        </tr>
+                        <tr>
+                            <td class="distance-cell" data-distance="500">500m</td>
+                            <td class="time-cell">--</td>
+                        </tr>
+                        <tr>
+                            <td class="distance-cell" data-distance="600">600m</td>
+                            <td class="time-cell">--</td>
+                        </tr>
+                        <tr>
+                            <td class="distance-cell" data-distance="800">800m</td>
+                            <td class="time-cell">--</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </main>
+
+        <footer>
+            <p>Made with ❤️ for runners</p>
+            <button id="install-btn" class="install-btn" style="display: none;">
+                📱 Install App
+            </button>
+        </footer>
+    </div>
+
+    <script src="time-calculator.js"></script>
+</body>
+</html> 

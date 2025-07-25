@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Convert running paces between km/h and min/km easily">
+    <meta name="theme-color" content="#2563eb">
+    <title>Running Pace Converter</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🏃%3C/text%3E%3C/svg%3E">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navigation">
+            <a href="index.html" class="nav-link active">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-text">Pace Converter</span>
+            </a>
+            <a href="time-calculator.html" class="nav-link">
+                <span class="nav-icon">⏱️</span>
+                <span class="nav-text">Time Calculator</span>
+            </a>
+        </nav>
+
+        <header>
+            <h1>🏃‍♂️ Running Pace Converter</h1>
+            <p class="subtitle">Convert between km/h and min/km</p>
+        </header>
+
+        <main>
+            <div class="converter-card">
+                <div class="input-group">
+                    <label for="kmh-input">Speed (km/h)</label>
+                    <input 
+                        type="number" 
+                        id="kmh-input" 
+                        placeholder="Enter speed in km/h"
+                        min="0"
+                        step="0.1"
+                        aria-describedby="kmh-help"
+                    >
+                    <small id="kmh-help">Enter your running speed in kilometers per hour</small>
+                </div>
+
+                <div class="conversion-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </div>
+
+                <div class="input-group">
+                    <label for="minkm-input">Pace (min/km)</label>
+                    <input 
+                        type="text" 
+                        id="minkm-input" 
+                        placeholder="Enter pace as mm:ss"
+                        aria-describedby="minkm-help"
+                        pattern="[0-9]*:?[0-9]*"
+                    >
+                    <small id="minkm-help">Enter your pace as minutes:seconds per kilometer</small>
+                </div>
+            </div>
+
+            <div class="quick-conversions">
+                <h3>Quick Reference</h3>
+                <div class="reference-grid">
+                    <div class="reference-item">
+                        <span class="pace">3:00 min/km</span>
+                        <span class="speed">20.0 km/h</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="pace">4:00 min/km</span>
+                        <span class="speed">15.0 km/h</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="pace">5:00 min/km</span>
+                        <span class="speed">12.0 km/h</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="pace">6:00 min/km</span>
+                        <span class="speed">10.0 km/h</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Made with ❤️ for runners</p>
+            <button id="install-btn" class="install-btn" style="display: none;">
+                📱 Install App
+            </button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
