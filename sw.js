@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pace-converter-v2';
+const CACHE_NAME = 'pace-converter-v3';
 const urlsToCache = [
     '/',
     '/index.html',

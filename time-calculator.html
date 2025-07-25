@@ -37,16 +37,14 @@
         <main>
             <div class="converter-card">
                 <div class="input-group">
-                    <label for="distance-input">Distance (meters)</label>
+                    <label for="distance-input">Distance (m)</label>
                     <input 
                         type="number" 
                         id="distance-input" 
-                        placeholder="Enter distance in meters"
+                        placeholder="5000"
                         min="0"
                         step="1"
-                        aria-describedby="distance-help"
                     >
-                    <small id="distance-help">Enter the distance you want to run in meters</small>
                 </div>
 
                 <div class="input-group">
@@ -54,26 +52,56 @@
                     <input 
                         type="text" 
                         id="pace-input" 
-                        placeholder="Enter pace as mm:ss"
-                        aria-describedby="pace-help"
+                        placeholder="5:30"
                         pattern="[0-9]*:?[0-9]*"
                     >
-                    <small id="pace-help">Enter your running pace as minutes:seconds per kilometer</small>
                 </div>
 
-                <div class="conversion-arrow">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L12 22M5 12L12 5L19 12"/>
-                    </svg>
+                <div class="input-group">
+                    <label for="time-input">Running Time</label>
+                    <input 
+                        type="text" 
+                        id="time-input" 
+                        placeholder="27:30"
+                        pattern="[0-9]*:?[0-9]*:?[0-9]*"
+                        readonly
+                        class="result-input"
+                    >
+                </div>
+            </div>
+
+            <div class="converter-card">
+                <div class="input-group">
+                    <label for="distance-input-2">Distance (m)</label>
+                    <input 
+                        type="number" 
+                        id="distance-input-2" 
+                        placeholder="5000"
+                        min="0"
+                        step="1"
+                    >
                 </div>
 
-                <div class="result-group">
-                    <label for="time-result">Running Time</label>
-                    <div class="result-display" id="time-result">
-                        <span class="result-value">--:--:--</span>
-                        <span class="result-unit">h:mm:ss</span>
-                    </div>
-                    <small>Total time needed to complete the distance</small>
+                <div class="input-group">
+                    <label for="time-input-2">Running Time</label>
+                    <input 
+                        type="text" 
+                        id="time-input-2" 
+                        placeholder="27:30"
+                        pattern="[0-9]*:?[0-9]*:?[0-9]*"
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="pace-input-2">Pace (min/km)</label>
+                    <input 
+                        type="text" 
+                        id="pace-input-2" 
+                        placeholder="5:30"
+                        pattern="[0-9]*:?[0-9]*"
+                        readonly
+                        class="result-input"
+                    >
                 </div>
             </div>
 

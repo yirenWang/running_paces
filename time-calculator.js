@@ -57,16 +57,68 @@ class TimeCalculator {
         }
         return `${meters}m`;
     }
+
+    static parseTimeInput(input) {
+        if (!input) return null;
+        
+        // Handle different time formats: "1:30:45", "90:30", "90"
+        const cleanInput = input.replace(/\s+/g, ':').trim();
+        const parts = cleanInput.split(':').map(part => parseInt(part) || 0);
+        
+        let hours = 0, minutes = 0, seconds = 0;
+        
+        if (parts.length === 1) {
+            // Just minutes: "90"
+            minutes = parts[0];
+        } else if (parts.length === 2) {
+            // Minutes and seconds: "90:30"
+            minutes = parts[0];
+            seconds = parts[1];
+        } else if (parts.length === 3) {
+            // Hours, minutes, seconds: "1:30:45"
+            hours = parts[0];
+            minutes = parts[1];
+            seconds = parts[2];
+        }
+        
+        const totalMinutes = hours * 60 + minutes + (seconds / 60);
+        return { hours, minutes, seconds, totalMinutes };
+    }
+
+    static calculatePace(distanceMeters, timeObj) {
+        if (distanceMeters <= 0 || !timeObj || timeObj.totalMinutes <= 0) return null;
+        
+        const distanceKm = distanceMeters / 1000;
+        const paceMinutesPerKm = timeObj.totalMinutes / distanceKm;
+        
+        const minutes = Math.floor(paceMinutesPerKm);
+        const seconds = Math.round((paceMinutesPerKm - minutes) * 60);
+        
+        return { 
+            minutes, 
+            seconds, 
+            totalMinutes: paceMinutesPerKm 
+        };
+    }
+
+    static formatPace(paceObj) {
+        if (!paceObj) return '--:--';
+        const { minutes, seconds } = paceObj;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
 }
 
-// DOM Elements
+// DOM Elements - First converter
 const distanceInput = document.getElementById('distance-input');
 const paceInput = document.getElementById('pace-input');
-const timeResult = document.getElementById('time-result');
-const installBtn = document.getElementById('install-btn');
+const timeInput = document.getElementById('time-input');
 
-// Conversion state
-let isUpdating = false;
+// DOM Elements - Second converter
+const distanceInput2 = document.getElementById('distance-input-2');
+const paceInput2 = document.getElementById('pace-input-2');
+const timeInput2 = document.getElementById('time-input-2');
+
+const installBtn = document.getElementById('install-btn');
 
 // Input validation and visual feedback
 function addValidClass(input) {
@@ -74,94 +126,63 @@ function addValidClass(input) {
     setTimeout(() => input.classList.remove('valid'), 1000);
 }
 
-// Calculate and display time
-function calculateRunningTime() {
-    if (isUpdating) return;
-    isUpdating = true;
-
-    const distance = parseFloat(distanceInput.value);
-    const paceInput_value = paceInput.value;
+// Calculate running time when distance and pace are provided (generic function)
+function calculateRunningTimeFor(distanceEl, paceEl, timeEl) {
+    const distance = parseFloat(distanceEl.value);
+    const paceValue = paceEl.value.trim();
     
-    if (distance && distance > 0 && paceInput_value) {
-        const pace = TimeCalculator.parsePaceInput(paceInput_value);
+    // Only calculate if both distance and pace have valid values
+    if (distance && distance > 0 && paceValue) {
+        const pace = TimeCalculator.parsePaceInput(paceValue);
         if (pace) {
             const time = TimeCalculator.calculateTime(distance, pace);
             if (time) {
-                const resultValue = timeResult.querySelector('.result-value');
-                resultValue.textContent = TimeCalculator.formatTime(time);
-                
-                // Add success animation
-                timeResult.classList.add('result-success');
-                setTimeout(() => timeResult.classList.remove('result-success'), 1000);
-                
-                addValidClass(distanceInput);
-                addValidClass(paceInput);
+                timeEl.value = TimeCalculator.formatTime(time);
+                addValidClass(timeEl);
             }
         }
     } else {
-        const resultValue = timeResult.querySelector('.result-value');
-        resultValue.textContent = '--:--:--';
+        // Clear time if either distance or pace is missing/invalid
+        timeEl.value = '';
     }
-
-    // Update distances table
-    updateDistancesTable();
-    isUpdating = false;
 }
 
-// Update distances table with calculated times
-function updateDistancesTable() {
-    const paceInput_value = paceInput.value;
-    const timeCells = document.querySelectorAll('.time-cell');
+// Calculate running time for first converter
+function calculateRunningTime() {
+    calculateRunningTimeFor(distanceInput, paceInput, timeInput);
+}
+
+// Calculate pace for second converter (distance + time → pace)
+function calculatePace2() {
+    const distance = parseFloat(distanceInput2.value);
+    const timeValue = timeInput2.value.trim();
     
-    if (paceInput_value) {
-        const pace = TimeCalculator.parsePaceInput(paceInput_value);
-        if (pace) {
-            document.querySelectorAll('.distance-cell').forEach((cell, index) => {
-                const distance = parseFloat(cell.getAttribute('data-distance'));
-                const time = TimeCalculator.calculateTime(distance, pace);
-                if (time) {
-                    timeCells[index].textContent = TimeCalculator.formatTime(time);
-                } else {
-                    timeCells[index].textContent = '--';
-                }
-            });
-        } else {
-            timeCells.forEach(cell => cell.textContent = '--');
+    // Only calculate if both distance and time have valid values
+    if (distance && distance > 0 && timeValue) {
+        const time = TimeCalculator.parseTimeInput(timeValue);
+        if (time) {
+            const pace = TimeCalculator.calculatePace(distance, time);
+            if (pace) {
+                paceInput2.value = TimeCalculator.formatPace(pace);
+                addValidClass(paceInput2);
+            }
         }
     } else {
-        timeCells.forEach(cell => cell.textContent = '--');
+        // Clear pace if either distance or time is missing/invalid
+        paceInput2.value = '';
     }
 }
 
-
-
-// Event listeners for real-time calculation
+// Event listeners for first converter
 distanceInput.addEventListener('input', calculateRunningTime);
 paceInput.addEventListener('input', calculateRunningTime);
 
-// Format pace input as user types
-paceInput.addEventListener('blur', function() {
-    const pace = TimeCalculator.parsePaceInput(this.value);
-    if (pace) {
-        this.value = `${pace.minutes}:${pace.seconds.toString().padStart(2, '0')}`;
-    }
-});
+// Event listeners for second converter (distance + time → pace)
+distanceInput2.addEventListener('input', calculatePace2);
+timeInput2.addEventListener('input', calculatePace2);
 
-// Distance cell interactions (clicking distance fills the distance input)
-document.querySelectorAll('.distance-cell').forEach(cell => {
-    cell.addEventListener('click', () => {
-        const distance = cell.getAttribute('data-distance');
-        distanceInput.value = distance;
-        
-        // Add visual feedback
-        cell.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-            cell.style.transform = '';
-        }, 150);
-        
-        calculateRunningTime();
-    });
-});
+
+
 
 // PWA Installation (shared functionality)
 let deferredPrompt;
@@ -194,53 +215,48 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// Reset all inputs
+function resetAll() {
+    // Clear first converter (distance + pace → time)
+    distanceInput.value = '';
+    paceInput.value = '';
+    timeInput.value = '';
+    
+    // Clear second converter (distance + time → pace)
+    distanceInput2.value = '';
+    timeInput2.value = '';
+    paceInput2.value = '';
+    
+    // Clear distances table
+    const timeCells = document.querySelectorAll('.time-cell');
+    timeCells.forEach(cell => cell.textContent = '--');
+}
+
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     // Clear all inputs with Escape
     if (e.key === 'Escape') {
-        distanceInput.value = '';
-        paceInput.value = '';
-        const resultValue = timeResult.querySelector('.result-value');
-        resultValue.textContent = '--:--:--';
+        resetAll();
         distanceInput.focus();
     }
     
-    // Switch between inputs with Tab or Enter
+    // Switch between inputs with Tab or Enter (skip readonly result inputs)
     if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent default form submission behavior
+        
         if (document.activeElement === distanceInput) {
             paceInput.focus();
         } else if (document.activeElement === paceInput) {
+            distanceInput2.focus();
+        } else if (document.activeElement === distanceInput2) {
+            timeInput2.focus();
+        } else if (document.activeElement === timeInput2) {
             distanceInput.focus();
         }
     }
 });
 
-// Format distance input to show commas
-distanceInput.addEventListener('input', function() {
-    const value = this.value.replace(/,/g, '');
-    if (value && !isNaN(value)) {
-        // Don't format while user is typing
-        const cursorPos = this.selectionStart;
-        const oldLength = this.value.length;
-        
-        setTimeout(() => {
-            if (!this.matches(':focus')) {
-                this.value = parseInt(value).toLocaleString();
-            }
-        }, 100);
-    }
-});
-
-distanceInput.addEventListener('blur', function() {
-    const value = this.value.replace(/,/g, '');
-    if (value && !isNaN(value)) {
-        this.value = parseInt(value).toLocaleString();
-    }
-});
-
-distanceInput.addEventListener('focus', function() {
-    this.value = this.value.replace(/,/g, '');
-});
+// Removed distance formatting to prevent clearing issues
 
 // Initialize with focus on first input
 distanceInput.focus();
